@@ -28,3 +28,4 @@ LexInvokeLambdaPermission:
     Principal: "lexv2.amazonaws.com"
     SourceArn:
       Fn::GetAtt: [NeymarBotAlias, Arn]
+

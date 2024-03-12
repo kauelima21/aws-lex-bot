@@ -1,7 +1,7 @@
 NeymarBotAlias:
   Type: "AWS::Lex::BotAlias"
   Properties:
-    BotAliasName: "NeymarBotAlias"
+    BotAliasName: dev
     BotId: ${self:custom.botId}
     BotVersion:
       Fn::GetAtt: [NeymarBotVersion, BotVersion]

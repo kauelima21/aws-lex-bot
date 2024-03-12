@@ -43,6 +43,9 @@ NeymarBot:
                   - Message:
                       PlainTextMessage:
                         Value: "Certo, vamos falar sobre um {InitialAction}"
+            SlotPriorities:
+              - Priority: 1
+                SlotName: "InitialAction"
             Slots:
               - Name: "InitialAction"
                 SlotTypeName: "InitialAction"
