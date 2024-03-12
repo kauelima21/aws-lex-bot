@@ -1,0 +1,15 @@
+NeymarBotAlias:
+  Type: "AWS::Lex::BotAlias"
+  Properties:
+    BotAliasName: "NeymarBotAlias"
+    BotId: ${self:custom.botId}
+    BotVersion:
+      Fn::GetAtt: [NeymarBotVersion, BotVersion]
+    BotAliasLocaleSettings:
+      - LocaleId: pt_BR
+        BotAliasLocaleSetting:
+          Enabled: true
+          CodeHookSpecification:
+            LambdaCodeHook:
+              CodeHookInterfaceVersion: "1.0"
+              LambdaArn: ${self:custom.lambdaArn}

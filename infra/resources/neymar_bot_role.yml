@@ -1,0 +1,30 @@
+NeymarBotRole:
+  Type: "AWS::IAM::Role"
+  Properties:
+    AssumeRolePolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: "Allow"
+          Principal:
+            Service: "lexv2.amazonaws.com"
+          Action: "sts:AssumeRole"
+    Policies:
+      - PolicyName: "LexBotPolicy"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - "logs:CreateLogGroup"
+                - "logs:CreateLogStream"
+                - "logs:PutLogEvents"
+              Resource: "*"
+
+LexInvokeLambdaPermission:
+  Type: AWS::Lambda::Permission
+  Properties:
+    Action: "lambda:InvokeFunction"
+    FunctionName: ${self:custom.lambdaArn}
+    Principal: "lexv2.amazonaws.com"
+    SourceArn:
+      Fn::GetAtt: [NeymarBotAlias, Arn]

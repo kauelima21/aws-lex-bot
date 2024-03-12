@@ -1,0 +1,54 @@
+service: neymar-bot
+
+plugins:
+  - serverless-iam-roles-per-function
+
+package:
+  individually: true
+  patterns:
+    - "!./**"
+    - ./src/handlers/neymar.py
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+
+custom:
+  lambdaArn: "arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:neymar_${self:provider.stage}"
+  botId:
+    Ref: NeymarBot
+  botAliasId:
+    Ref: NeymarBotAlias
+
+functions:
+  neymar:
+    name: neymar_${self:provider.stage}
+    handler: src/handlers/neymar.lambda_handler
+  #   environment:
+  #     BOT_ID: ${self:custom.botId}
+  #     BOT_ALIAS_ID: ${self:custom.botAliasId}
+  #   events:
+  #     - http:
+  #         path: neymar
+  #         method: post
+  #   iamRoleStatements:
+  #     - Effect: Allow
+  #       Action:
+  #         - "lex:*"
+  #       Resource:
+  #       - Fn::GetAtt: [NeymarBotAlias, Arn]
+ 
+resources:
+  Resources:
+    NeymarBotRole: ${file(./infra/resources/neymar_bot_role.yml):NeymarBotRole}
+
+    LexInvokeLambdaPermission: ${file(./infra/resources/neymar_bot_role.yml):LexInvokeLambdaPermission}
+
+    NeymarBot: ${file(./infra/resources/neymar_bot.yml):NeymarBot}
+
+    NeymarBotVersion: ${file(./infra/resources/neymar_bot_version.yml):NeymarBotVersion}
+
+    NeymarBotAlias: ${file(./infra/resources/neymar_bot_alias.yml):NeymarBotAlias}
+

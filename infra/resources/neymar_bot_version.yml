@@ -1,0 +1,9 @@
+NeymarBotVersion:
+  Type: "AWS::Lex::BotVersion"
+  Properties:
+    Description: "NeymarBot version"
+    BotId: ${self:custom.botId}
+    BotVersionLocaleSpecification:
+      - LocaleId: pt_BR
+        BotVersionLocaleDetails:
+          SourceBotVersion: DRAFT

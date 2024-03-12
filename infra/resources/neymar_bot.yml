@@ -1,0 +1,61 @@
+NeymarBot:
+  Type: "AWS::Lex::Bot"
+  Properties:
+    Name: "Neymar"
+    Description: "Bot para PoC do Amazon Lex"
+    IdleSessionTTLInSeconds: 300
+    DataPrivacy:
+      ChildDirected: false
+    BotLocales:
+      - LocaleId: pt_BR
+        NluConfidenceThreshold: 0.40
+        SlotTypes:
+          - Name: "InitialAction"
+            Description: "Primeira escolha do user no chat"
+            SlotTypeValues:
+              - SampleValue:
+                  Value: "dúvida"
+              - SampleValue:
+                  Value: "problema"
+            ValueSelectionSetting:
+              ResolutionStrategy: TOP_RESOLUTION
+        Intents:
+          - Name: "Greeting"
+            Description: "Saudação inicial ao bot"
+            DialogCodeHook:
+              Enabled: true
+            SampleUtterances:
+              - Utterance: "Olá"
+              - Utterance: "Oi"
+              - Utterance: "Ola Neymar"
+            InitialResponseSetting:
+              InitialResponse:
+                MessageGroupsList:
+                  - Message:
+                      PlainTextMessage:
+                        Value: "Oi eu sou o Neymar! Como posso ajudar você hoje?"
+                    Variations:
+                      - PlainTextMessage:
+                          Value: "Olá eu sou o Neymar! O que eu posso fazer por você hoje?"
+            IntentClosingSetting:
+              ClosingResponse:
+                MessageGroupsList:
+                  - Message:
+                      PlainTextMessage:
+                        Value: "Certo, vamos falar sobre um {InitialAction}"
+            Slots:
+              - Name: "InitialAction"
+                SlotTypeName: "InitialAction"
+                ValueElicitationSetting:
+                  SlotConstraint: "Required"
+                  PromptSpecification:
+                    MessageGroupsList:
+                      - Message:
+                          PlainTextMessage:
+                            Value: "Vamos falar sobre um dúvida ou problema?"
+                    MaxRetries: 3
+          - Name: "FallbackIntent"
+            Description: "Default intent when no other intent matches"
+            ParentIntentSignature: "AMAZON.FallbackIntent"
+    RoleArn:
+      Fn::GetAtt: [NeymarBotRole, Arn]
