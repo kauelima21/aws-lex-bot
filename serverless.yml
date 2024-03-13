@@ -7,7 +7,7 @@ package:
   individually: true
   patterns:
     - "!./**"
-    - ./src/handlers/neymar.py
+    - ./src/handlers/**
 
 provider:
   name: aws
@@ -26,19 +26,22 @@ functions:
   neymar:
     name: neymar_${self:provider.stage}
     handler: src/handlers/neymar.lambda_handler
-  #   environment:
-  #     BOT_ID: ${self:custom.botId}
-  #     BOT_ALIAS_ID: ${self:custom.botAliasId}
-  #   events:
-  #     - http:
-  #         path: neymar
-  #         method: post
-  #   iamRoleStatements:
-  #     - Effect: Allow
-  #       Action:
-  #         - "lex:*"
-  #       Resource:
-  #       - Fn::GetAtt: [NeymarBotAlias, Arn]
+  neymar_api:
+    name: neymar_api_${self:provider.stage}
+    handler: src/handlers/api.lambda_handler
+    environment:
+      BOT_ID: ${self:custom.botId}
+      BOT_ALIAS_ID: ${self:custom.botAliasId}
+    events:
+      - http:
+          path: neymar
+          method: post
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - "lex:*"
+        Resource:
+        - Fn::GetAtt: [NeymarBotAlias, Arn]
  
 resources:
   Resources:
@@ -51,4 +54,12 @@ resources:
     NeymarBotVersion: ${file(./infra/resources/neymar_bot_version.yml):NeymarBotVersion}
 
     NeymarBotAlias: ${file(./infra/resources/neymar_bot_alias.yml):NeymarBotAlias}
+
+    # ConnectInstance:
+    #   Type: "AWS:;Connect::Instance"
+    #   Properties:
+    #     Attributes:
+    #       InboundCalls: true
+    #       OutboundCalls: true
+    #     IdentityManagementType: SAM
 

@@ -8,37 +8,30 @@ def lambda_handler(event, context):
     slots = event['sessionState']['intent']['slots']
     intent = event['sessionState']['intent']['name']
 
-    logging.info(f'slots for intent {intent} => {slots}')
-
-    if event['invocationSource'] == 'DialogCodeHook':
-        return {
-            'sessionState': {
-                'dialogAction': {
-                    'type': 'Delegate',
-                },
-                'intent': {
-                    'name': intent,
-                    'slots': slots,
-                },
-            },
-        }
-
-    return {
+    response = {
         'sessionState': {
             'dialogAction': {
-                'type': 'Close',
+                'type': 'Delegate',
             },
             'intent': {
                 'name': intent,
                 'slots': slots,
-                'state': 'Fulfilled',
             },
         },
-        'messages': [
+    }
+    logging.info(f'slots for intent {intent} => {slots}')
+
+    if event['invocationSource'] == 'DialogCodeHook':
+        return response
+
+    if slots.get('ProblemCatalog') and slots['ProblemCatalog']['value']['originalValue'] == 'Ações':
+        response['sessionState']['dialogAction']['type'] = 'Close'
+        response['sessionState']['messages'] = [
             {
                 'contentType': 'PlainText',
-                'content': 'Its over'
+                'content': 'Certo, aqui está uma lista de ações para prosseguir com o problema:\n- Informar o codigo do erro para mais detalhes: basta digitar "Erro:" em seguida o codigo\n - Registrar um ticket para atendimento: se quiser saber como fazer, basta digitar "Abrir Ticket"'
             }
         ]
-    }
+        response['sessionState']['intent']['state'] = 'Fulfilled'
+    return response
 

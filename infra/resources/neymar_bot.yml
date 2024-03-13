@@ -10,52 +10,91 @@ NeymarBot:
       - LocaleId: pt_BR
         NluConfidenceThreshold: 0.40
         SlotTypes:
-          - Name: "InitialAction"
-            Description: "Primeira escolha do user no chat"
+          - Name: "ProblemCatalog"
+            Description: "Catálogo de problemas"
             SlotTypeValues:
               - SampleValue:
-                  Value: "dúvida"
+                  Value: "Ações"
               - SampleValue:
-                  Value: "problema"
+                  Value: "Visualizar recursos"
+            ValueSelectionSetting:
+              ResolutionStrategy: TOP_RESOLUTION
+          - Name: "DoubtCatalog" 
+            Description: "Catálogo de dúvidas"
+            SlotTypeValues:
+              - SampleValue:
+                  Value: "Como utilizar um recurso"
             ValueSelectionSetting:
               ResolutionStrategy: TOP_RESOLUTION
         Intents:
           - Name: "Greeting"
             Description: "Saudação inicial ao bot"
-            DialogCodeHook:
-              Enabled: true
             SampleUtterances:
               - Utterance: "Olá"
               - Utterance: "Oi"
               - Utterance: "Ola Neymar"
-            InitialResponseSetting:
-              InitialResponse:
-                MessageGroupsList:
-                  - Message:
-                      PlainTextMessage:
-                        Value: "Oi eu sou o Neymar! Como posso ajudar você hoje?"
-                    Variations:
-                      - PlainTextMessage:
-                          Value: "Olá eu sou o Neymar! O que eu posso fazer por você hoje?"
             IntentClosingSetting:
               ClosingResponse:
                 MessageGroupsList:
                   - Message:
                       PlainTextMessage:
-                        Value: "Certo, vamos falar sobre um {InitialAction}"
+                        Value: "Oi eu sou o Neymar! Como posso ajudar você hoje?\nVamos falar sobre um dúvida ou problema?"
+                    Variations:
+                      - PlainTextMessage:
+                          Value: "Olá eu sou o Neymar! O que eu posso fazer por você hoje?\nVamos falar sobre um dúvida ou problema?"
+          - Name: "Problem"
+            Description: "Definir o tipo de problema"
+            DialogCodeHook:
+              Enabled: true
+            FulfillmentCodeHook:
+              Enabled: true
+            SampleUtterances:
+              - Utterance: "problema"
+            InitialResponseSetting:
+              InitialResponse:
+                MessageGroupsList:
+                  - Message:
+                      PlainTextMessage:
+                        Value: "Sinto muito que você esteja passando por um problema!"
+            # IntentClosingSetting:
+            #   ClosingResponse:
+            #     MessageGroupsList:
+            #       - Message:
+            #           PlainTextMessage:
+            #             Value: "Certo, aqui está uma lista de ações para prosseguir com o problema:\n- Informar o codigo do erro para mais detalhes: basta digitar 'Erro:' em seguida o codigo\n - Registrar um ticket para atendimento: se quiser saber como fazer, basta digitar 'Abrir Ticket'"
             SlotPriorities:
               - Priority: 1
-                SlotName: "InitialAction"
+                SlotName: "ProblemCatalog"
             Slots:
-              - Name: "InitialAction"
-                SlotTypeName: "InitialAction"
+              - Name: "ProblemCatalog"
+                SlotTypeName: "ProblemCatalog"
                 ValueElicitationSetting:
                   SlotConstraint: "Required"
                   PromptSpecification:
                     MessageGroupsList:
                       - Message:
                           PlainTextMessage:
-                            Value: "Vamos falar sobre um dúvida ou problema?"
+                            Value: "Onde você está enfrentando o problema?\n- Ações\n- Visualizar recursos"
+                    MaxRetries: 3
+          - Name: "Doubt"
+            Description: "Definir o tipo de dúvida"
+            DialogCodeHook:
+              Enabled: true
+            SampleUtterances:
+              - Utterance: "dúvida"
+            SlotPriorities:
+              - Priority: 1
+                SlotName: "DoubtCatalog"
+            Slots:
+              - Name: "DoubtCatalog"
+                SlotTypeName: "DoubtCatalog"
+                ValueElicitationSetting:
+                  SlotConstraint: "Required"
+                  PromptSpecification:
+                    MessageGroupsList:
+                      - Message:
+                          PlainTextMessage:
+                            Value: "Sobre o quê é a sua dúvida?\n- Como utilizar um recurso"
                     MaxRetries: 3
           - Name: "FallbackIntent"
             Description: "Default intent when no other intent matches"
