@@ -44,8 +44,8 @@ NeymarBot:
                           Value: "Olá eu sou o Neymar! O que eu posso fazer por você hoje?\nVamos falar sobre um dúvida ou problema?"
           - Name: "Problem"
             Description: "Definir o tipo de problema"
-            DialogCodeHook:
-              Enabled: true
+            # DialogCodeHook:
+            #   Enabled: true
             FulfillmentCodeHook:
               Enabled: true
             SampleUtterances:
@@ -56,12 +56,6 @@ NeymarBot:
                   - Message:
                       PlainTextMessage:
                         Value: "Sinto muito que você esteja passando por um problema!"
-            # IntentClosingSetting:
-            #   ClosingResponse:
-            #     MessageGroupsList:
-            #       - Message:
-            #           PlainTextMessage:
-            #             Value: "Certo, aqui está uma lista de ações para prosseguir com o problema:\n- Informar o codigo do erro para mais detalhes: basta digitar 'Erro:' em seguida o codigo\n - Registrar um ticket para atendimento: se quiser saber como fazer, basta digitar 'Abrir Ticket'"
             SlotPriorities:
               - Priority: 1
                 SlotName: "ProblemCatalog"
@@ -78,7 +72,9 @@ NeymarBot:
                     MaxRetries: 3
           - Name: "Doubt"
             Description: "Definir o tipo de dúvida"
-            DialogCodeHook:
+            # DialogCodeHook:
+            #   Enabled: true
+            FulfillmentCodeHook:
               Enabled: true
             SampleUtterances:
               - Utterance: "dúvida"

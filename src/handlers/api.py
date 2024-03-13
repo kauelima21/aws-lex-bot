@@ -34,7 +34,7 @@ def lambda_handler(event, context):
 
     return {
         'statusCode': 200,
-        'body': response.get('messages'),
+        'body': json.dumps(response.get('messages')),
         'isBase64Encoded': False,
         "headers": {
             "Content-Type": "application/json"
