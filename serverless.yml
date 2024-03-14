@@ -55,11 +55,21 @@ resources:
 
     NeymarBotAlias: ${file(./infra/resources/neymar_bot_alias.yml):NeymarBotAlias}
 
-    # ConnectInstance:
-    #   Type: "AWS:;Connect::Instance"
-    #   Properties:
-    #     Attributes:
-    #       InboundCalls: true
-    #       OutboundCalls: true
-    #     IdentityManagementType: SAM
+    ConnectInstance:
+      Type: AWS::Connect::Instance
+      Properties:
+        InstanceAlias: ConnectNeymar
+        Attributes:
+          InboundCalls: false
+          OutboundCalls: false
+        IdentityManagementType: SAML
+
+    ConnectLexAssociation:
+      Type: AWS::Connect::IntegrationAssociation
+      Properties:
+        InstanceId:
+          Fn::GetAtt: [ConnectInstance, Arn]
+        IntegrationType: LEX_BOT
+        IntegrationArn:
+          Fn::GetAtt: [NeymarBotAlias, Arn]
 
